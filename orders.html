@@ -1,147 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="orders.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Purchase Orders</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-    <title>Orders</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 2rem;
-            background-color: #f4f4f4;
-        }
-        h1 {
-            color: #333;
-        }
-        form {
-            margin-bottom: 2rem;
-            background: #fff;
-            padding: 1rem;
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            max-width: 400px;
-        }
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #ordersList {
-            max-width: 600px;
-            background: #fff;
-            padding: 1rem;
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        #ordersList table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #ordersList th, #ordersList td {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        #ordersList th {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
+  body {
+    margin: 0;
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #f9f9f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 5px #4b3b67;
+  }
+  .table-container {
+    background: #fff;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    max-width: 100%;
+    width: 720px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 680px;
+  }
+  thead {
+    background: #764ba2;
+    color: #fff;
+    font-weight: 600;
+  }
+  th, td {
+    padding: 12px 18px;
+    text-align: center;
+    border-bottom: 1px solid #e1e1e1;
+    font-size: 1rem;
+  }
+  tbody tr:nth-child(even) {
+    background: #f7f7f7;
+    color: #333;
+  }
+  tbody tr:nth-child(odd) {
+    background: #ffffff;
+    color: #333;
+  }
+  tbody tr:hover {
+    background: #d3b9ea;
+    color: #3b0d6c;
+    cursor: default;
+  }
+  @media (max-width: 480px) {
+    body {
+      padding: 1rem;
+    }
+    .table-container {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+    table {
+      min-width: unset;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 8px 10px;
+    }
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+</style>
 </head>
 <body>
-    <h1>Orders</h1>
-    <form id="orderForm">
-        <label for="product">Product Name:</label>
-        <input type="text" id="product" name="product" required />
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" min="1" required />
-        <button type="submit">Place Order</button>
-    </form>
-    <div id="ordersList">
-        <h2>Existing Orders</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody id="ordersTableBody">
-                <!-- Orders will be populated here -->
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-        const orderForm = document.getElementById('orderForm');
-        const ordersTableBody = document.getElementById('ordersTableBody');
-
-        async function fetchOrders() {
-            try {
-                const response = await fetch('/api/orders');
-                const orders = await response.json();
-                ordersTableBody.innerHTML = '';
-                orders.forEach(order => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${order.id}</td>
-                        <td>${order.product}</td>
-                        <td>${order.quantity}</td>
-                    `;
-                    ordersTableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error fetching orders:', error);
-            }
-        }
-
-        orderForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const product = document.getElementById('product').value;
-            const quantity = parseInt(document.getElementById('quantity').value, 10);
-
-            try {
-                const response = await fetch('/api/orders', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ product, quantity })
-                });
-                if (response.ok) {
-                    orderForm.reset();
-                    fetchOrders();
-                } else {
-                    console.error('Failed to place order');
-                }
-            } catch (error) {
-                console.error('Error placing order:', error);
-            }
-        });
-
-        // Initial fetch of orders
-        fetchOrders();
-    </script>
+  <h1>Purchase Orders</h1>
+  <div class="table-container" role="region" aria-label="Purchase orders table">
+    <table>
+      <thead>
+        <tr>
+          <th>PO Id</th>
+          <th>Supplier ID</th>
+          <th>PO Date</th>
+          <th>Order Amount</th>
+          <th>Total Cost</th>
+          <th>Expected Delivery</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>2025-03-21</td>
+          <td>50</td>
+          <td>$10,000.00</td>
+          <td>2025-04-25</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>1</td>
+          <td>2025-03-21</td>
+          <td>40</td>
+          <td>$8,000.00</td>
+          <td>2025-04-25</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>3</td>
+          <td>2025-03-21</td>
+          <td>10</td>
+          <td>$7,500.00</td>
+          <td>2025-04-25</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>3</td>
+          <td>2025-03-21</td>
+          <td>40</td>
+          <td>$6,000.00</td>
+          <td>2025-03-25</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>1</td>
+          <td>2025-04-01</td>
+          <td>15</td>
+          <td>$10,500.00</td>
+          <td>2025-05-19</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>2</td>
+          <td>2025-04-01</td>
+          <td>20</td>
+          <td>$20,000.00</td>
+          <td>2025-06-27</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>
+
