@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sales</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.3);
+            width: 100%;
+            padding: 1rem 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        nav a {
+            color: #fff;
+            margin: 0 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            flex: 1;
+            width: 90%;
+            max-width: 900px;
+            margin: 2rem auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #e8f5e9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="orders.html">Orders</a>
+            <a href="sales.html" aria-current="page" style="text-decoration: underline;">Sales</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Sales Data</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sale ID</th>
+                    <th>Product ID</th>
+                    <th>Sale Date</th>
+                    <th>Quantity Sold</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1</td><td>11</td><td>2025-04-14</td><td>1</td><td>$175.00</td></tr>
+                <tr><td>2</td><td>4</td><td>2025-04-14</td><td>2</td><td>$480.00</td></tr>
+                <tr><td>3</td><td>6</td><td>2025-04-14</td><td>1</td><td>$1500.00</td></tr>
+                <tr><td>4</td><td>11</td><td>2025-04-15</td><td>2</td><td>$350.00</td></tr>
+                <tr><td>5</td><td>3</td><td>2025-04-10</td><td>4</td><td>$1000.00</td></tr>
+                <tr><td>6</td><td>5</td><td>2025-04-15</td><td>2</td><td>$4400.00</td></tr>
+                <tr><td>7</td><td>9</td><td>2025-04-14</td><td>2</td><td>$1250.00</td></tr>
+                <tr><td>8</td><td>4</td><td>2025-04-15</td><td>1</td><td>$240.00</td></tr>
+                <tr><td>9</td><td>1</td><td>2025-04-16</td><td>1</td><td>$1200.00</td></tr>
+                <tr><td>9</td><td>2</td><td>2025-04-16</td><td>2</td><td>$900.00</td></tr>
+                <tr><td>10</td><td>3</td><td>2025-04-16</td><td>3</td><td>$750.00</td></tr>
+                <tr><td>11</td><td>11</td><td>2025-04-16</td><td>4</td><td>$700.00</td></tr>
+                <tr><td>12</td><td>7</td><td>2025-04-17</td><td>1</td><td>$1600.00</td></tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
