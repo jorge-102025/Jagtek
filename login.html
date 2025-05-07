@@ -1,280 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Portal | Private Access</title>
-    <style>
-        :root {
-            --primary: #2A2F4F;
-            --secondary: #917FB3;
-            --accent: #E5BEEC;
-            --text: #2D3250;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Login</title>
+<style>
+  /* Reset and base styles */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #5a9bd4, #1e3c72);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+  }
+  #login-container {
+    background: rgba(255,255,255,0.1);
+    padding: 30px;
+    border-radius: 12px;
+    width: 320px;
+    max-width: 90vw;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  h1 {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+    letter-spacing: 2px;
+    user-select: none;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+  }
+  input[type="text"],
+  input[type="password"] {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: background-color 0.3s ease;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    background-color: rgba(255,255,255,0.2);
+  }
+  button {
+    padding: 14px 18px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e3c72;
+    background: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255,255,255,0.25);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    user-select: none;
+  }
+  button:hover, button:focus {
+    background-color: #c1dbff;
+    color: #0f264a;
+    outline: none;
+  }
+  #error-message {
+    color: #ff6b6b;
+    font-weight: 600;
+    text-align: center;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    height: 18px;
+  }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            padding: 1rem;
-        }
-
-        .auth-container {
-            width: 100%;
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        input {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--secondary);
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: var(--text);
-        }
-
-        button {
-            width: 100%;
-            padding: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .protected-content {
-            display: none;
-            text-align: center;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 1rem;
-            color: var(--text);
-        }
-
-        .error-message {
-            color: #ff4444;
-            text-align: center;
-            margin: 1rem 0;
-            display: none;
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        h1 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        @media (max-width: 480px) {
-            .auth-container {
-                padding: 1.5rem;
-                margin: 1rem;
-            }
-            
-            input, button {
-                padding: 0.8rem;
-            }
-        }
-    </style>
+  /* Mobile responsiveness */
+  @media (max-width: 400px) {
+    #login-container {
+      width: 90vw;
+      padding: 20px;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="auth-container" id="authContainer">
-        <!-- Login Form -->
-        <div class="auth-form" id="loginForm">
-            <div class="auth-header">
-                <h1>🔒 Secure Portal</h1>
-                <p>Access your private content</p>
-            </div>
-            
-            <div class="error-message" id="errorMessage"></div>
-            <div class="loading" id="loading">Authenticating...</div>
+  <div id="login-container" role="main" aria-describedby="login-desc">
+    <h1>Login</h1>
+    <form id="login-form" novalidate>
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" autocomplete="username" required aria-required="true" aria-label="Username" />
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required aria-required="true" aria-label="Password" />
+      </div>
+      <div id="error-message" aria-live="assertive"></div>
+      <button type="submit" aria-label="Log in">Log In</button>
+    </form>
+  </div>
 
-            <form onsubmit="return handleLogin(event)">
-                <div class="form-group">
-                    <input type="text" id="username" placeholder="Username" required>
-                </div>
-                
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="Password" required>
-                    <span class="password-toggle" onclick="togglePassword()">👁️</span>
-                </div>
+<script>
+  (function(){
+    // Predefined authorized users (up to 10)
+    const users = [
+      { username: "alice", password: "alice123", redirect: "sales.html" },
+      { username: "bob", password: "bob1234", redirect: "orders.html" },
+      { username: "charlie", password: "charlie123", redirect: "sales.html" },
+      { username: "david", password: "davidpass", redirect: "orders.html" },
+      { username: "emily", password: "emily2024", redirect: "sales.html" },
+      { username: "frank", password: "frankie", redirect: "orders.html" },
+      { username: "grace", password: "gracepass", redirect: "sales.html" },
+      { username: "henry", password: "henrypwd", redirect: "orders.html" },
+      { username: "irene", password: "irene4321", redirect: "sales.html" },
+      { username: "jack", password: "jackpass", redirect: "orders.html" }
+    ];
 
-                <button type="submit">Unlock Access</button>
-            </form>
-        </div>
+    const form = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      errorMessage.textContent = '';
 
-        <!-- Protected Content -->
-        <div class="protected-content" id="protectedContent">
-            <div class="auth-header">
-                <h1>🛡️ Private Zone</h1>
-                <p>Welcome back, <span id="userDisplay">user</span>!</p>
-            </div>
-            
-            <div class="content">
-                <p>🔐 You're viewing sensitive content that requires authenticationp>
-                <button onclick="logout()" style="background: var(--secondary)">Log Out</button>
-            </div>
-        </div>
-    </div>
+      const username = form.username.value.trim();
+      const password = form.password.value;
 
-    <script>
-        const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour
-        
-        function togglePassword() {
-            const passwordField = document.getElementById('password');
-            const toggle = document.querySelector('.password-toggle');
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                toggle.textContent = '👁️';
-            } else {
-                passwordField.type = 'password';
-                toggle.textContent = '👁️';
-            }
-        }
+      if(username === '' || password === '') {
+        errorMessage.textContent = "Please enter both username and password.";
+        return;
+      }
 
-        function simulateAuthCheck(username, password) {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    // Demo credentials - In real app, validate against backend
-                    resolve(username === 'admin' && password === 'admin123');
-                }, 1500);
-            });
-        }
+      const user = users.find(u => u.username === username && u.password === password);
 
-        async function handleLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            showLoading(true);
-            try {
-                const isAuthenticated = await simulateAuthCheck(username, password);
-                
-                if (isAuthenticated) {
-                    localStorage.setItem('auth', JSON.stringify({
-                        user: username,
-                        expires: Date.now() + SESSION_TIMEOUT
-                    }));
-                    checkAuth();
-                } else {
-                    showError('Invalid credentials');
-                }
-            } catch (err) {
-                showError('Authentication failed');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function checkAuth() {
-            const authData = JSON.parse(localStorage.getItem('auth'));
-            const protectedContent = document.getElementById('protectedContent');
-            const loginForm = document.getElementById('loginForm');
-            
-            if (authData && authData.expires > Date.now()) {
-                document.getElementById('userDisplay').textContent = authData.user;
-                loginForm.style.display = 'none';
-                protectedContent.style.display = 'block';
-            } else {
-                localStorage.removeItem('auth');
-                loginForm.style.display = 'block';
-                protectedContent.style.display = 'none';
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('auth');
-            checkAuth();
-        }
-
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-        }
-
-        function showError(message) {
-            const errorEl = document.getElementById('errorMessage');
-            errorEl.textContent = message;
-            errorEl.style.display = 'block';
-            setTimeout(() => errorEl.style.display = 'none', 3000);
-        }
-
-        // Initial auth check
-        checkAuth();
-        // Session checker
-        setInterval(checkAuth, 1000);
-    </script>
+      if(user) {
+        // Redirect after successful login
+        window.location.href = user.redirect;
+      } else {
+        errorMessage.textContent = "Invalid username or password.";
+      }
+    });
+  })();
+</script>
 </body>
 </html>
 </content>
 </create_file>
 
-<attempt_completion>
-✅ Secure Login System Complete!
+<create_file>
+<path>sales.html</path>
+<content>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Sales Page</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    text-align: center;
+  }
+  h1 {
+    font-size: 2.5rem;
+    user-select: none;
+    letter-spacing: 2px;
+  }
+  p {
+    font-size: 1.25rem;
+    margin-top: 12px;
+  }
+  /* Responsive */
+  @media(max-width: 400px) {
+    h1 {
+      font-size: 2rem;
+    }
+    p {
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <main role="main">
+    <h1>Sales Page</h1>
+    <p>Welcome to the Sales dashboard.</p>
+  </main>
+</body>
+</html>
+</content>
+</create_file>
 
-Features included:
-- Modern glassmorphism UI design
-- Mobile-responsive layout (works down to 320px width)
-- Session management with 1-hour timeout
-- Password visibility toggle
-- Loading states & error handling
-- Fake authentication simulation (admin/admin123)
-- Auto-redirect to login when unauthorized
+<create_file>
+<path>orders.html</path>
+<content>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Orders Page</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    text-align: center;
+  }
+  h1 {
+    font-size: 2.5rem;
+    user-select: none;
+    letter-spacing: 2px;
+  }
+  p {
+    font-size: 1.25rem;
+    margin-top: 12px;
+  }
+  /* Responsive */
+  @media(max-width: 400px) {
+    h1 {
+      font-size: 2rem;
+    }
+    p {
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <main role="main">
+    <h1>Orders Page</h1>
+    <p>Welcome to the Orders dashboard.</p>
+  </main>
+</body>
+</html>
+</content>
+</create_file>
 
-Test it by:
-1. Saving as `secure-app.html`
-2. Opening in a browser
-3. Try credentials: admin/admin123
-
-The system will:
-- Block access to protected content until login
-- Automatically log out after 1 hour
-- Prevent back-button navigation
-- Work perfectly on mobile devices
-
-⚠️ Note: This is frontend-only demo. For production use, you'd need proper backend authentication.
-</attempt_completion>
