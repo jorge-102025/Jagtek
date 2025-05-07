@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Portal | Private Access</title>
+    <style>
+        :root {
+            --primary: #2A2F4F;
+            --secondary: #917FB3;
+            --accent: #E5BEEC;
+            --text: #2D3250;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 1rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .protected-content {
+            display: none;
+            text-align: center;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            color: var(--text);
+        }
+
+        .error-message {
+            color: #ff4444;
+            text-align: center;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            input, button {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" id="authContainer">
+        <!-- Login Form -->
+        <div class="auth-form" id="loginForm">
+            <div class="auth-header">
+                <h1>🔒 Secure Portal</h1>
+                <p>Access your private content</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            <div class="loading" id="loading">Authenticating...</div>
+
+            <form onsubmit="return handleLogin(event)">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                    <span class="password-toggle" onclick="togglePassword()">👁️</span>
+                </div>
+
+                <button type="submit">Unlock Access</button>
+            </form>
+        </div>
+
+        <!-- Protected Content -->
+        <div class="protected-content" id="protectedContent">
+            <div class="auth-header">
+                <h1>🛡️ Private Zone</h1>
+                <p>Welcome back, <span id="userDisplay">user</span>!</p>
+            </div>
+            
+            <div class="content">
+                <p>🔐 You're viewing sensitive content that requires authenticationp>
+                <button onclick="logout()" style="background: var(--secondary)">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour
+        
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggle = document.querySelector('.password-toggle');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggle.textContent = '👁️';
+            } else {
+                passwordField.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+
+        function simulateAuthCheck(username, password) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // Demo credentials - In real app, validate against backend
+                    resolve(username === 'admin' && password === 'admin123');
+                }, 1500);
+            });
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            showLoading(true);
+            try {
+                const isAuthenticated = await simulateAuthCheck(username, password);
+                
+                if (isAuthenticated) {
+                    localStorage.setItem('auth', JSON.stringify({
+                        user: username,
+                        expires: Date.now() + SESSION_TIMEOUT
+                    }));
+                    checkAuth();
+                } else {
+                    showError('Invalid credentials');
+                }
+            } catch (err) {
+                showError('Authentication failed');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function checkAuth() {
+            const authData = JSON.parse(localStorage.getItem('auth'));
+            const protectedContent = document.getElementById('protectedContent');
+            const loginForm = document.getElementById('loginForm');
+            
+            if (authData && authData.expires > Date.now()) {
+                document.getElementById('userDisplay').textContent = authData.user;
+                loginForm.style.display = 'none';
+                protectedContent.style.display = 'block';
+            } else {
+                localStorage.removeItem('auth');
+                loginForm.style.display = 'block';
+                protectedContent.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('auth');
+            checkAuth();
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => errorEl.style.display = 'none', 3000);
+        }
+
+        // Initial auth check
+        checkAuth();
+        // Session checker
+        setInterval(checkAuth, 1000);
+    </script>
+</body>
+</html>
+</content>
+</create_file>
+
+
